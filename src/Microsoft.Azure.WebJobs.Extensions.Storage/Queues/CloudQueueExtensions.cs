@@ -28,10 +28,5 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
             // $$$ How to pass cancellationtoken?
             return queue.DeleteMessageAsync(message);
         }
-
-        public static Task UpdateMessageAsync(this QueueClient queue, QueueMessage message, TimeSpan visibilityTimeout, MessageUpdateFields updateFields, CancellationToken cancellationToken)
-        {
-            return queue.UpdateMessageAsync(message, visibilityTimeout, updateFields, null, null, cancellationToken);
-        }
     }
 }
