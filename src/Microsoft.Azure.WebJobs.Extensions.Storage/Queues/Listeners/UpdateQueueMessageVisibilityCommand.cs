@@ -13,12 +13,12 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
 {
     internal class UpdateQueueMessageVisibilityCommand : ITaskSeriesCommand
     {
-        private readonly CloudQueue _queue;
+        private readonly QueueClient _queue;
         private readonly QueueMessage _message;
         private readonly TimeSpan _visibilityTimeout;
         private readonly IDelayStrategy _speedupStrategy;
 
-        public UpdateQueueMessageVisibilityCommand(CloudQueue queue, QueueMessage message,
+        public UpdateQueueMessageVisibilityCommand(QueueClient queue, QueueMessage message,
             TimeSpan visibilityTimeout, IDelayStrategy speedupStrategy)
         {
             if (queue == null)

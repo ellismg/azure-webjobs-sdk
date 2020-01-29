@@ -14,10 +14,10 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
 {
     internal class BlobTriggerQueueWriter : IBlobTriggerQueueWriter
     {
-        private readonly CloudQueue _queue;
+        private readonly QueueClient _queue;
         private readonly IMessageEnqueuedWatcher _watcher;
 
-        public BlobTriggerQueueWriter(CloudQueue queue, IMessageEnqueuedWatcher watcher)
+        public BlobTriggerQueueWriter(QueueClient queue, IMessageEnqueuedWatcher watcher)
         {
             _queue = queue;
             Debug.Assert(watcher != null);

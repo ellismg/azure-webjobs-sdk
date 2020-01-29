@@ -13,7 +13,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 {
     internal static class StorageQueueExtensions
     {
-        public static async Task AddMessageAndCreateIfNotExistsAsync(this CloudQueue queue,
+        public static async Task AddMessageAndCreateIfNotExistsAsync(this QueueClient queue,
             QueueMessage message, CancellationToken cancellationToken)
         {
             if (queue == null)

@@ -27,8 +27,8 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
 
         private readonly ITaskSeriesTimer _timer;
         private readonly IDelayStrategy _delayStrategy;
-        private readonly CloudQueue _queue;
-        private readonly CloudQueue _poisonQueue;
+        private readonly QueueClient _queue;
+        private readonly QueueClient _poisonQueue;
         private readonly ITriggerExecutor<QueueMessage> _triggerExecutor;
         private readonly IWebJobsExceptionHandler _exceptionHandler;
         private readonly IMessageEnqueuedWatcher _sharedWatcher;
@@ -53,8 +53,8 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
         {
         }
 
-        public QueueListener(CloudQueue queue,
-            CloudQueue poisonQueue,
+        public QueueListener(QueueClient queue,
+            QueueClient poisonQueue,
             ITriggerExecutor<QueueMessage> triggerExecutor,
             IWebJobsExceptionHandler exceptionHandler,
             ILoggerFactory loggerFactory,
@@ -361,7 +361,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
             _sharedWatcher.Notify(e.PoisonQueue.Name);
         }
 
-        private ITaskSeriesTimer CreateUpdateMessageVisibilityTimer(CloudQueue queue,
+        private ITaskSeriesTimer CreateUpdateMessageVisibilityTimer(QueueClient queue,
             QueueMessage message, TimeSpan visibilityTimeout,
             IWebJobsExceptionHandler exceptionHandler)
         {
@@ -381,7 +381,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
             }
         }
 
-        internal static QueueProcessor CreateQueueProcessor(CloudQueue queue, CloudQueue poisonQueue, ILoggerFactory loggerFactory, IQueueProcessorFactory queueProcessorFactory,
+        internal static QueueProcessor CreateQueueProcessor(QueueClient queue, QueueClient poisonQueue, ILoggerFactory loggerFactory, IQueueProcessorFactory queueProcessorFactory,
             QueuesOptions queuesOptions, EventHandler<PoisonMessageEventArgs> poisonQueueMessageAddedHandler)
         {
             QueueProcessorFactoryContext context = new QueueProcessorFactoryContext(queue, loggerFactory, queuesOptions, poisonQueue);

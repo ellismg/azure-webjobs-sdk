@@ -85,10 +85,10 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                         .BindToCollector<QueueMessage>(this);
 
                 binding.SetPostResolveHook(ToReadWriteParameterDescriptorForCollector)
-                        .BindToInput<CloudQueue>(builder);
+                        .BindToInput<QueueClient>(builder);
 
                 binding.SetPostResolveHook(ToReadWriteParameterDescriptorForCollector)
-                        .BindToInput<CloudQueue>(builder);
+                        .BindToInput<QueueClient>(builder);
             }
 
             private async Task<object> ConvertPocoToQueueMessage(object arg, Attribute attrResolved, ValueBindingContext context)
@@ -115,7 +115,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 return Task.FromResult<JObject>(objectToken);
             }
 
-            // ParameterDescriptor for binding to CloudQueue. Whereas the output bindings are FileAccess.Write; CloudQueue exposes Peek() 
+            // ParameterDescriptor for binding to QueueClient. Whereas the output bindings are FileAccess.Write; QueueClient exposes Peek() 
             // and so is technically Read/Write. 
             // Preserves compat with older SDK. 
             private ParameterDescriptor ToReadWriteParameterDescriptorForCollector(QueueAttribute attr, ParameterInfo parameter, INameResolver nameResolver)
@@ -193,7 +193,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 return new QueueAsyncCollector(queue, _messageEnqueuedWatcherGetter.Value);
             }
 
-            internal Task<CloudQueue> GetQueueAsync(QueueAttribute attrResolved)
+            internal Task<QueueClient> GetQueueAsync(QueueAttribute attrResolved)
             {
                 // var account = await _accountProvider.GetStorageAccountAsync(attrResolved, CancellationToken.None);
                 var account = _accountProvider.Get(attrResolved.Connection);
@@ -206,7 +206,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 return Task.FromResult(queue);
             }
 
-            internal CloudQueue GetQueue(QueueAttribute attrResolved)
+            internal QueueClient GetQueue(QueueAttribute attrResolved)
             {
                 var queue = Task.Run(() => GetQueueAsync(attrResolved)).GetAwaiter().GetResult();
                 return queue;
@@ -214,7 +214,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
         }
 
         private class QueueBuilder :
-            IAsyncConverter<QueueAttribute, CloudQueue>
+            IAsyncConverter<QueueAttribute, QueueClient>
         {
             private readonly PerHostConfig _bindingProvider;
 
@@ -223,11 +223,11 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 _bindingProvider = bindingProvider;
             }
 
-            async Task<CloudQueue> IAsyncConverter<QueueAttribute, CloudQueue>.ConvertAsync(
+            async Task<QueueClient> IAsyncConverter<QueueAttribute, QueueClient>.ConvertAsync(
                 QueueAttribute attrResolved,
                 CancellationToken cancellation)
             {
-                CloudQueue queue = await _bindingProvider.GetQueueAsync(attrResolved);
+                QueueClient queue = await _bindingProvider.GetQueueAsync(attrResolved);
                 await queue.CreateIfNotExistsAsync(cancellation);
                 return queue;
             }
@@ -236,10 +236,10 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
         // The core Async Collector for queueing messages. 
         internal class QueueAsyncCollector : IAsyncCollector<QueueMessage>
         {
-            private readonly CloudQueue _queue;
+            private readonly QueueClient _queue;
             private readonly IMessageEnqueuedWatcher _messageEnqueuedWatcher;
 
-            public QueueAsyncCollector(CloudQueue queue, IMessageEnqueuedWatcher messageEnqueuedWatcher)
+            public QueueAsyncCollector(QueueClient queue, IMessageEnqueuedWatcher messageEnqueuedWatcher)
             {
                 this._queue = queue;
                 this._messageEnqueuedWatcher = messageEnqueuedWatcher;

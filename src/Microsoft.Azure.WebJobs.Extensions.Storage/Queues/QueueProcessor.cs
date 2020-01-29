@@ -22,8 +22,8 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
     /// </remarks>
     public class QueueProcessor
     {
-        private readonly CloudQueue _queue;
-        private readonly CloudQueue _poisonQueue;
+        private readonly QueueClient _queue;
+        private readonly QueueClient _poisonQueue;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         /// <param name="poisonQueue">The poison queue to copy the message to</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> to use</param>
         /// <returns></returns>
-        protected virtual async Task CopyMessageToPoisonQueueAsync(QueueMessage message, CloudQueue poisonQueue, CancellationToken cancellationToken)
+        protected virtual async Task CopyMessageToPoisonQueueAsync(QueueMessage message, QueueClient poisonQueue, CancellationToken cancellationToken)
         {
             string msg = string.Format(CultureInfo.InvariantCulture, "Message has reached MaxDequeueCount of {0}. Moving message to queue '{1}'.", MaxDequeueCount, poisonQueue.Name);
             _logger?.LogWarning(msg);

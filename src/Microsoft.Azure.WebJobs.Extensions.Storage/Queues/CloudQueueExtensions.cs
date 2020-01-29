@@ -13,23 +13,23 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 {
     internal static class CloudQueueExtensions
     {
-        public static Task<bool> CreateIfNotExistsAsync(this CloudQueue queue, CancellationToken cancellationToken)
+        public static Task<bool> CreateIfNotExistsAsync(this QueueClient queue, CancellationToken cancellationToken)
         {
             return queue.CreateIfNotExistsAsync(null, null, cancellationToken);
         }
 
-        public static Task AddMessageAsync(this CloudQueue queue, QueueMessage message, CancellationToken cancellationToken)
+        public static Task AddMessageAsync(this QueueClient queue, QueueMessage message, CancellationToken cancellationToken)
         {
             return queue.AddMessageAsync(message, null, null, null, null, cancellationToken);
         }
 
-        public static Task DeleteMessageAsync(this CloudQueue queue, QueueMessage message, CancellationToken cancellationToken)
+        public static Task DeleteMessageAsync(this QueueClient queue, QueueMessage message, CancellationToken cancellationToken)
         {
             // $$$ How to pass cancellationtoken?
             return queue.DeleteMessageAsync(message);
         }
 
-        public static Task UpdateMessageAsync(this CloudQueue queue, QueueMessage message, TimeSpan visibilityTimeout, MessageUpdateFields updateFields, CancellationToken cancellationToken)
+        public static Task UpdateMessageAsync(this QueueClient queue, QueueMessage message, TimeSpan visibilityTimeout, MessageUpdateFields updateFields, CancellationToken cancellationToken)
         {
             return queue.UpdateMessageAsync(message, visibilityTimeout, updateFields, null, null, cancellationToken);
         }

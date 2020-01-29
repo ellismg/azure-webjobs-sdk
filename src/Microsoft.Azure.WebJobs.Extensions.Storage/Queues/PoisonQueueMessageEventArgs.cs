@@ -18,7 +18,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         /// </summary>
         /// <param name="message">The poison message</param>
         /// <param name="poisonQueue">The poison queue</param>
-        public PoisonMessageEventArgs(QueueMessage message, CloudQueue poisonQueue)
+        public PoisonMessageEventArgs(QueueMessage message, QueueClient poisonQueue)
         {
             Message = message;
             PoisonQueue = poisonQueue;
@@ -32,6 +32,6 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         /// <summary>
         /// The poison queue
         /// </summary>
-        public CloudQueue PoisonQueue { get; private set; }
+        public QueueClient PoisonQueue { get; private set; }
     }
 }

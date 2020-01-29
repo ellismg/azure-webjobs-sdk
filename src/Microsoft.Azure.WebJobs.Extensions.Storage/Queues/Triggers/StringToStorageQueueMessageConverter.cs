@@ -9,9 +9,9 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 {
     internal class StringToStorageQueueMessageConverter : IConverter<string, QueueMessage>
     {
-        private readonly CloudQueue _queue;
+        private readonly QueueClient _queue;
 
-        public StringToStorageQueueMessageConverter(CloudQueue queue)
+        public StringToStorageQueueMessageConverter(QueueClient queue)
         {
             if (queue == null)
             {

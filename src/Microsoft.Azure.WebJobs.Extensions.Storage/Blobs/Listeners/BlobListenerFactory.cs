@@ -145,7 +145,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
             string hostId,
             SharedBlobListener sharedBlobListener,
             CloudBlobClient blobClient,
-            CloudQueue hostBlobTriggerQueue,
+            QueueClient hostBlobTriggerQueue,
             IMessageEnqueuedWatcher messageEnqueuedWatcher,
             CancellationToken cancellationToken)
         {

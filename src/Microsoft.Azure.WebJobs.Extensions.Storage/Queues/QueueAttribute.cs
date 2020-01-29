@@ -13,7 +13,7 @@ namespace Microsoft.Azure.WebJobs
     /// <remarks>
     /// The method parameter type can be one of the following:
     /// <list type="bullet">
-    /// <item><description>CloudQueue</description></item>
+    /// <item><description>QueueClient</description></item>
     /// <item><description>QueueMessage (out parameter)</description></item>
     /// <item><description><see cref="string"/> (out parameter)</description></item>
     /// <item><description><see cref="T:byte[]"/> (out parameter)</description></item>

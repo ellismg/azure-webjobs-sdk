@@ -23,7 +23,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
         private const string SharedBlobQueueListenerFunctionId = "SharedBlobQueueListener";
 
         private readonly SharedQueueWatcher _sharedQueueWatcher;
-        private readonly CloudQueue _hostBlobTriggerQueue;
+        private readonly QueueClient _hostBlobTriggerQueue;
         private readonly QueuesOptions _queueOptions;
         private readonly IWebJobsExceptionHandler _exceptionHandler;
         private readonly IBlobWrittenWatcher _blobWrittenWatcher;
@@ -34,7 +34,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
         public SharedBlobQueueListenerFactory(
             StorageAccount hostAccount,
             SharedQueueWatcher sharedQueueWatcher,
-            CloudQueue hostBlobTriggerQueue,
+            QueueClient hostBlobTriggerQueue,
             QueuesOptions queueOptions,
             IWebJobsExceptionHandler exceptionHandler,
             ILoggerFactory loggerFactory,
@@ -85,7 +85,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
                 _executor = executor;
             }
 
-            protected override Task CopyMessageToPoisonQueueAsync(QueueMessage message, CloudQueue poisonQueue, CancellationToken cancellationToken)
+            protected override Task CopyMessageToPoisonQueueAsync(QueueMessage message, QueueClient poisonQueue, CancellationToken cancellationToken)
             {
                 // determine the poison queue based on the storage account
                 // of the triggering blob, or default
@@ -94,7 +94,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
                 return base.CopyMessageToPoisonQueueAsync(message, poisonQueue, cancellationToken);
             }
 
-            private CloudQueue GetPoisonQueue(QueueMessage message)
+            private QueueClient GetPoisonQueue(QueueMessage message)
             {
                 if (message == null)
                 {
@@ -117,12 +117,12 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
         private class SharedBlobQueueProcessorFactory : IQueueProcessorFactory
         {
             private readonly BlobQueueTriggerExecutor _triggerExecutor;
-            private readonly CloudQueue _queue;
+            private readonly QueueClient _queue;
             private readonly ILoggerFactory _loggerFactory;
             private readonly QueuesOptions _options;
-            private readonly CloudQueue _poisonQueue;
+            private readonly QueueClient _poisonQueue;
 
-            public SharedBlobQueueProcessorFactory(BlobQueueTriggerExecutor triggerExecutor, CloudQueue queue, ILoggerFactory loggerFactory, QueuesOptions queuesOptions, CloudQueue poisonQueue)
+            public SharedBlobQueueProcessorFactory(BlobQueueTriggerExecutor triggerExecutor, QueueClient queue, ILoggerFactory loggerFactory, QueuesOptions queuesOptions, QueueClient poisonQueue)
             {
                 _triggerExecutor = triggerExecutor;
                 _queue = queue;

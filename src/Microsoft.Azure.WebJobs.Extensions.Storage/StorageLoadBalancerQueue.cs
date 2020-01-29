@@ -58,9 +58,9 @@ namespace WebJobs.Extensions.Storage
         class QueueWriter<T> : IAsyncCollector<T>
         {
             StorageLoadBalancerQueue _parent;
-            CloudQueue _queue;
+            QueueClient _queue;
 
-            public QueueWriter(StorageLoadBalancerQueue parent, CloudQueue queue)
+            public QueueWriter(StorageLoadBalancerQueue parent, QueueClient queue)
             {
                 this._parent = parent;
                 this._queue = queue;
@@ -85,7 +85,7 @@ namespace WebJobs.Extensions.Storage
             }
         }
 
-        private CloudQueue Convert(string queueMoniker)
+        private QueueClient Convert(string queueMoniker)
         {
             // $$$ Review
             var account = _storageAccountProvider.Get(ConnectionStringNames.Dashboard);

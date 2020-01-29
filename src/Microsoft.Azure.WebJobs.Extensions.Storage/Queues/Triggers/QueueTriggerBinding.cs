@@ -20,7 +20,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
     internal class QueueTriggerBinding : ITriggerBinding
     {
         private readonly string _parameterName;
-        private readonly CloudQueue _queue;
+        private readonly QueueClient _queue;
         private readonly ITriggerDataArgumentBinding<QueueMessage> _argumentBinding;
         private readonly IReadOnlyDictionary<string, Type> _bindingDataContract;
         private readonly QueuesOptions _queueOptions;
@@ -31,7 +31,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
         private readonly IQueueProcessorFactory _queueProcessorFactory;
 
         public QueueTriggerBinding(string parameterName,
-            CloudQueue queue,
+            QueueClient queue,
             ITriggerDataArgumentBinding<QueueMessage> argumentBinding,
             QueuesOptions queueOptions,
             IWebJobsExceptionHandler exceptionHandler,
@@ -93,7 +93,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             return contract;
         }
 
-        private static IObjectToTypeConverter<QueueMessage> CreateConverter(CloudQueue queue)
+        private static IObjectToTypeConverter<QueueMessage> CreateConverter(QueueClient queue)
         {
             return new CompositeObjectToTypeConverter<QueueMessage>(
                 new OutputConverter<QueueMessage>(new IdentityConverter<QueueMessage>()),

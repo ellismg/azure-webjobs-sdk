@@ -18,8 +18,8 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
     {
         private static string poisonQueueSuffix = "-poison";
 
-        private readonly CloudQueue _queue;
-        private readonly CloudQueue _poisonQueue;
+        private readonly QueueClient _queue;
+        private readonly QueueClient _poisonQueue;
         private readonly QueuesOptions _queueOptions;
         private readonly IWebJobsExceptionHandler _exceptionHandler;
         private readonly SharedQueueWatcher _messageEnqueuedWatcherSetter;
@@ -28,7 +28,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
         private readonly FunctionDescriptor _descriptor;
         private readonly IQueueProcessorFactory _queueProcessorFactory;
 
-        public QueueListenerFactory(CloudQueue queue,
+        public QueueListenerFactory(QueueClient queue,
             QueuesOptions queueOptions,
             IWebJobsExceptionHandler exceptionHandler,
             SharedQueueWatcher messageEnqueuedWatcherSetter,
@@ -60,7 +60,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
             return Task.FromResult(listener);
         }
 
-        private static CloudQueue CreatePoisonQueueReference(CloudQueueClient client, string name)
+        private static QueueClient CreatePoisonQueueReference(CloudQueueClient client, string name)
         {
             Debug.Assert(client != null);
 
