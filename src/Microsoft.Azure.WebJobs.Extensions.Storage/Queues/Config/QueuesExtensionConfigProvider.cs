@@ -163,7 +163,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 // Queue pre-existing  behavior: if there are { }in the path, then defer validation until runtime. 
                 if (!queueName.Contains("{"))
                 {
-                    QueueClient.ValidateQueueName(queueName);
+                    QueueUtils.ValidateQueueName(queueName);
                 }
             }
 
@@ -200,7 +200,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 var client = account.CreateCloudQueueClient();
 
                 string queueName = attrResolved.QueueName.ToLowerInvariant();
-                QueueClient.ValidateQueueName(queueName);
+                QueueUtils.ValidateQueueName(queueName);
 
                 var queue = client.GetQueueReference(queueName);
                 return Task.FromResult(queue);

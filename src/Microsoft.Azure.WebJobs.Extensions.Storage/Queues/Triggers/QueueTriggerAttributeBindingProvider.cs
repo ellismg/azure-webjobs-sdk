@@ -86,7 +86,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
         private static string NormalizeAndValidate(string queueName)
         {
             queueName = queueName.ToLowerInvariant(); // must be lowercase. coerce here to be nice.
-            QueueClient.ValidateQueueName(queueName);
+            QueueUtils.ValidateQueueName(queueName);
             return queueName;
         }
 

@@ -7,7 +7,7 @@ using Microsoft.Azure.WebJobs.Host;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {
-    internal static class QueueClient
+    internal static class QueueUtils
     {
         public static string GetAccountName(this CloudQueueClient client)
         {

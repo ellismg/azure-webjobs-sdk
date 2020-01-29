@@ -75,7 +75,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
 
             string possiblePoisonQueueName = name + poisonQueueSuffix;
 
-            if (!QueueClient.IsValidQueueName(possiblePoisonQueueName))
+            if (!QueueUtils.IsValidQueueName(possiblePoisonQueueName))
             {
                 return null;
             }
