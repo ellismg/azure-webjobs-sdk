@@ -159,7 +159,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
         private void RegisterWithSharedBlobQueueListenerAsync(
             SharedBlobQueueListener sharedBlobQueueListener,
             CloudBlobClient blobClient,
-            CloudQueueClient queueClient)
+            QueueServiceClient queueClient)
         {
             BlobQueueRegistration registration = new BlobQueueRegistration
             {

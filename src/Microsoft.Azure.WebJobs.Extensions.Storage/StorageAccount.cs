@@ -59,7 +59,7 @@ namespace Microsoft.Azure.WebJobs
         {
             return SdkObject.CreateCloudBlobClient();
         }
-        public virtual CloudQueueClient CreateCloudQueueClient()
+        public virtual QueueServiceClient CreateCloudQueueClient()
         {
             return SdkObject.CreateCloudQueueClient();
         }

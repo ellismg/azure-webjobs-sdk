@@ -28,6 +28,6 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
         /// <summary>
         /// The storage client to use for the poison queue.
         /// </summary>
-        public CloudQueueClient QueueClient { get; set; }
+        public QueueServiceClient QueueClient { get; set; }
     }
 }

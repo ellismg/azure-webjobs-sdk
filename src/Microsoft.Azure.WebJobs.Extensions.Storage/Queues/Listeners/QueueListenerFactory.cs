@@ -60,7 +60,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
             return Task.FromResult(listener);
         }
 
-        private static QueueClient CreatePoisonQueueReference(CloudQueueClient client, string name)
+        private static QueueClient CreatePoisonQueueReference(QueueServiceClient client, string name)
         {
             Debug.Assert(client != null);
 

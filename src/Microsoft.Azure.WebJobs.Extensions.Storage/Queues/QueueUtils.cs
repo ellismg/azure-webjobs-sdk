@@ -9,7 +9,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 {
     internal static class QueueUtils
     {
-        public static string GetAccountName(this CloudQueueClient client)
+        public static string GetAccountName(this QueueServiceClient client)
         {
             return client?.Credentials?.AccountName;
         }
