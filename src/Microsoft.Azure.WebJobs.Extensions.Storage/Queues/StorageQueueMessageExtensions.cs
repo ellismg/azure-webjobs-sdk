@@ -3,7 +3,7 @@
 
 using System;
 using System.Text;
-using Microsoft.Azure.Storage.Queue;
+using Azure.Storage.Queues;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {

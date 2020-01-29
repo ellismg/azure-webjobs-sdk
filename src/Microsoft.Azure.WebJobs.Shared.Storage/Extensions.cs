@@ -3,7 +3,6 @@
 
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
-using Microsoft.Azure.Storage.Queue;
 using Microsoft.Azure.Storage.Shared.Protocol;
 using System;
 using System.IO;

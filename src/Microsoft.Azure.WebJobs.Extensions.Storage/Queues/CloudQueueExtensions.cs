@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Storage.Queue;
+using Azure.Storage.Queues;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
+using Azure.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.Storage.Blob;
-using Microsoft.Azure.Storage.Queue;
 
 namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
 {

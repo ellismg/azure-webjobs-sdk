@@ -2,10 +2,10 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using Azure.Storage.Queues;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
-using Microsoft.Azure.Storage.Queue;
 
 using CloudStorageAccount = Microsoft.Azure.Storage.CloudStorageAccount;
 using TableStorageAccount = Microsoft.Azure.Cosmos.Table.CloudStorageAccount;

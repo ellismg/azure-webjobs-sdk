@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using Azure.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host.Protocols;
-using Microsoft.Azure.Storage.Queue;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues

@@ -3,8 +3,8 @@
 
 using System.Collections.Generic;
 using System.Reflection;
+using Azure.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host.Triggers;
-using Microsoft.Azure.Storage.Queue;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 {

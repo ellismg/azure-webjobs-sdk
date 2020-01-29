@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
-using Microsoft.Azure.Storage.Queue;
+using Azure.Storage.Queues;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {
