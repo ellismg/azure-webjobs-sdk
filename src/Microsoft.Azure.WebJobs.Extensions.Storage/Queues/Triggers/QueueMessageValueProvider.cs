@@ -4,17 +4,18 @@
 using System;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 {
     internal class QueueMessageValueProvider : IValueProvider
     {
-        private readonly CloudQueueMessage _message;
+        private readonly QueueMessage _message;
         private readonly object _value;
         private readonly Type _valueType;
 
-        public QueueMessageValueProvider(CloudQueueMessage message, object value, Type valueType)
+        public QueueMessageValueProvider(QueueMessage message, object value, Type valueType)
         {
             if (value != null && !valueType.IsAssignableFrom(value.GetType()))
             {

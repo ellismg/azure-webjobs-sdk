@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Description;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Config;
@@ -48,7 +49,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
         // Multiple JobHost objects may share the same JobHostConfiguration.
         // But queues have per-host instance state (IMessageEnqueuedWatcher). 
         // so capture that and create new binding rules per host instance. 
-        private class PerHostConfig : IAsyncConverter<QueueAttribute, IAsyncCollector<CloudQueueMessage>>
+        private class PerHostConfig : IAsyncConverter<QueueAttribute, IAsyncCollector<QueueMessage>>
         {
             // Fields that the various binding funcs need to close over. 
             private StorageAccountProvider _accountProvider;
@@ -68,20 +69,20 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 // IStorageQueueMessage is the core testing interface 
                 var binding = context.AddBindingRule<QueueAttribute>();
                 binding
-                    .AddConverter<byte[], CloudQueueMessage>(ConvertByteArrayToCloudQueueMessage)
-                    .AddConverter<string, CloudQueueMessage>(ConvertStringToCloudQueueMessage)
-                    .AddOpenConverter<OpenType.Poco, CloudQueueMessage>(ConvertPocoToCloudQueueMessage);
+                    .AddConverter<byte[], QueueMessage>(ConvertByteArrayToQueueMessage)
+                    .AddConverter<string, QueueMessage>(ConvertStringToQueueMessage)
+                    .AddOpenConverter<OpenType.Poco, QueueMessage>(ConvertPocoToQueueMessage);
 
                 context // global converters, apply to multiple attributes. 
-                     .AddConverter<CloudQueueMessage, byte[]>(ConvertCloudQueueMessageToByteArray)
-                     .AddConverter<CloudQueueMessage, string>(ConvertCloudQueueMessageToString);
+                     .AddConverter<QueueMessage, byte[]>(ConvertQueueMessageToByteArray)
+                     .AddConverter<QueueMessage, string>(ConvertQueueMessageToString);
 
                 var builder = new QueueBuilder(this);
 
                 binding.AddValidator(ValidateQueueAttribute);
 
                 binding.SetPostResolveHook(ToWriteParameterDescriptorForCollector)
-                        .BindToCollector<CloudQueueMessage>(this);
+                        .BindToCollector<QueueMessage>(this);
 
                 binding.SetPostResolveHook(ToReadWriteParameterDescriptorForCollector)
                         .BindToInput<CloudQueue>(builder);
@@ -90,18 +91,18 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                         .BindToInput<CloudQueue>(builder);
             }
 
-            private async Task<object> ConvertPocoToCloudQueueMessage(object arg, Attribute attrResolved, ValueBindingContext context)
+            private async Task<object> ConvertPocoToQueueMessage(object arg, Attribute attrResolved, ValueBindingContext context)
             {
                 var attr = (QueueAttribute)attrResolved;
                 var jobj = await SerializeToJobject(arg, attr, context);
-                var msg = ConvertJObjectToCloudQueueMessage(jobj, attr);
+                var msg = ConvertJObjectToQueueMessage(jobj, attr);
                 return msg;
             }
 
-            private CloudQueueMessage ConvertJObjectToCloudQueueMessage(JObject obj, QueueAttribute attrResolved)
+            private QueueMessage ConvertJObjectToQueueMessage(JObject obj, QueueAttribute attrResolved)
             {
                 var json = obj.ToString(); // convert to JSon
-                return ConvertStringToCloudQueueMessage(json, attrResolved);
+                return ConvertStringToQueueMessage(json, attrResolved);
             }
 
             // Hook JObject serialization to so we can stamp the object with a causality marker. 
@@ -166,27 +167,27 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 }
             }
 
-            private byte[] ConvertCloudQueueMessageToByteArray(CloudQueueMessage arg)
+            private byte[] ConvertQueueMessageToByteArray(QueueMessage arg)
             {
                 return arg.AsBytes;
             }
 
-            private string ConvertCloudQueueMessageToString(CloudQueueMessage arg)
+            private string ConvertQueueMessageToString(QueueMessage arg)
             {
                 return arg.AsString;
             }
 
-            private CloudQueueMessage ConvertByteArrayToCloudQueueMessage(byte[] arg, QueueAttribute attrResolved)
+            private QueueMessage ConvertByteArrayToQueueMessage(byte[] arg, QueueAttribute attrResolved)
             {
-                return new CloudQueueMessage(arg);
+                return new QueueMessage(arg);
             }
 
-            private CloudQueueMessage ConvertStringToCloudQueueMessage(string arg, QueueAttribute attrResolved)
+            private QueueMessage ConvertStringToQueueMessage(string arg, QueueAttribute attrResolved)
             {
-                return new CloudQueueMessage(arg);
+                return new QueueMessage(arg);
             }
 
-            public async Task<IAsyncCollector<CloudQueueMessage>> ConvertAsync(QueueAttribute attrResolved, CancellationToken cancellationToken)
+            public async Task<IAsyncCollector<QueueMessage>> ConvertAsync(QueueAttribute attrResolved, CancellationToken cancellationToken)
             {
                 var queue = await GetQueueAsync(attrResolved);
                 return new QueueAsyncCollector(queue, _messageEnqueuedWatcherGetter.Value);
@@ -233,7 +234,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
         }
 
         // The core Async Collector for queueing messages. 
-        internal class QueueAsyncCollector : IAsyncCollector<CloudQueueMessage>
+        internal class QueueAsyncCollector : IAsyncCollector<QueueMessage>
         {
             private readonly CloudQueue _queue;
             private readonly IMessageEnqueuedWatcher _messageEnqueuedWatcher;
@@ -244,7 +245,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 this._messageEnqueuedWatcher = messageEnqueuedWatcher;
             }
 
-            public async Task AddAsync(CloudQueueMessage message, CancellationToken cancellationToken = default(CancellationToken))
+            public async Task AddAsync(QueueMessage message, CancellationToken cancellationToken = default(CancellationToken))
             {
                 if (message == null)
                 {

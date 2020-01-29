@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using Microsoft.Azure.WebJobs.Host.Protocols;
 using Microsoft.Azure.WebJobs.Host.Queues;
@@ -84,7 +85,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
                 _executor = executor;
             }
 
-            protected override Task CopyMessageToPoisonQueueAsync(CloudQueueMessage message, CloudQueue poisonQueue, CancellationToken cancellationToken)
+            protected override Task CopyMessageToPoisonQueueAsync(QueueMessage message, CloudQueue poisonQueue, CancellationToken cancellationToken)
             {
                 // determine the poison queue based on the storage account
                 // of the triggering blob, or default
@@ -93,7 +94,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
                 return base.CopyMessageToPoisonQueueAsync(message, poisonQueue, cancellationToken);
             }
 
-            private CloudQueue GetPoisonQueue(CloudQueueMessage message)
+            private CloudQueue GetPoisonQueue(QueueMessage message)
             {
                 if (message == null)
                 {

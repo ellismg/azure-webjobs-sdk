@@ -2,21 +2,22 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Converters;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 {
-    internal class OutputConverter<TInput> : IObjectToTypeConverter<CloudQueueMessage>
+    internal class OutputConverter<TInput> : IObjectToTypeConverter<QueueMessage>
         where TInput : class
     {
-        private readonly IConverter<TInput, CloudQueueMessage> _innerConverter;
+        private readonly IConverter<TInput, QueueMessage> _innerConverter;
 
-        public OutputConverter(IConverter<TInput, CloudQueueMessage> innerConverter)
+        public OutputConverter(IConverter<TInput, QueueMessage> innerConverter)
         {
             _innerConverter = innerConverter;
         }
 
-        public bool TryConvert(object input, out CloudQueueMessage output)
+        public bool TryConvert(object input, out QueueMessage output)
         {
             TInput typedInput = input as TInput;
 

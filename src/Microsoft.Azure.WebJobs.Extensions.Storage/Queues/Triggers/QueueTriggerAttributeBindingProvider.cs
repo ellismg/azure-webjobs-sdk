@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Queues.Listeners;
 using Microsoft.Azure.WebJobs.Host.Timers;
 using Microsoft.Azure.WebJobs.Host.Triggers;
@@ -17,7 +18,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
     {
         private static readonly IQueueTriggerArgumentBindingProvider InnerProvider =
             new CompositeArgumentBindingProvider(
-                new ConverterArgumentBindingProvider<CloudQueueMessage>(new CloudQueueMessageDirectConverter()), // $$$: Is this the best way to handle a direct CloudQueueMessage?
+                new ConverterArgumentBindingProvider<QueueMessage>(new QueueMessageDirectConverter()), // $$$: Is this the best way to handle a direct QueueMessage?
                 new ConverterArgumentBindingProvider<string>(new StorageQueueMessageToStringConverter()),
                 new ConverterArgumentBindingProvider<byte[]>(new StorageQueueMessageToByteArrayConverter()),
                 new UserTypeArgumentBindingProvider()); // Must come last, because it will attempt to bind all types.
@@ -61,7 +62,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             string queueName = Resolve(queueTrigger.QueueName);
             queueName = NormalizeAndValidate(queueName);
 
-            ITriggerDataArgumentBinding<CloudQueueMessage> argumentBinding = InnerProvider.TryCreate(parameter);
+            ITriggerDataArgumentBinding<QueueMessage> argumentBinding = InnerProvider.TryCreate(parameter);
 
             if (argumentBinding == null)
             {

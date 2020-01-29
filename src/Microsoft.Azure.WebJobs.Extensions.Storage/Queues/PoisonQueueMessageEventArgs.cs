@@ -3,6 +3,7 @@
 
 using System;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {
@@ -17,7 +18,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         /// </summary>
         /// <param name="message">The poison message</param>
         /// <param name="poisonQueue">The poison queue</param>
-        public PoisonMessageEventArgs(CloudQueueMessage message, CloudQueue poisonQueue)
+        public PoisonMessageEventArgs(QueueMessage message, CloudQueue poisonQueue)
         {
             Message = message;
             PoisonQueue = poisonQueue;
@@ -26,7 +27,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         /// <summary>
         /// The poison message
         /// </summary>
-        public CloudQueueMessage Message { get; private set; }
+        public QueueMessage Message { get; private set; }
 
         /// <summary>
         /// The poison queue

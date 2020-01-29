@@ -3,12 +3,13 @@
 
 using System.Reflection;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Triggers;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 {
     internal interface IQueueTriggerArgumentBindingProvider
     {
-        ITriggerDataArgumentBinding<CloudQueueMessage> TryCreate(ParameterInfo parameter);
+        ITriggerDataArgumentBinding<QueueMessage> TryCreate(ParameterInfo parameter);
     }
 }

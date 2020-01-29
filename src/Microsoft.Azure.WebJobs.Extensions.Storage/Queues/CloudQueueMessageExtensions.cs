@@ -4,26 +4,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {
-    internal static class CloudQueueMessageExtensions
+    internal static class QueueMessageExtensions
     {
         private static PropertyHelper _idProp;
         private static PropertyHelper _popReceiptProp;
 
-        static CloudQueueMessageExtensions()
+        static QueueMessageExtensions()
         {
-            IReadOnlyList<PropertyHelper> messageProperties = PropertyHelper.GetProperties(typeof(CloudQueueMessage));
-            _idProp = messageProperties.Single(p => p.Name == nameof(CloudQueueMessage.Id));
-            _popReceiptProp = messageProperties.Single(p => p.Name == nameof(CloudQueueMessage.PopReceipt));
+            IReadOnlyList<PropertyHelper> messageProperties = PropertyHelper.GetProperties(typeof(QueueMessage));
+            _idProp = messageProperties.Single(p => p.Name == nameof(QueueMessage.Id));
+            _popReceiptProp = messageProperties.Single(p => p.Name == nameof(QueueMessage.PopReceipt));
         }
 
         /// <summary>
         /// Overwrites the message's Id and PopReceipt properties with the specified values, if different.
         /// </summary>
-        public static void UpdateChangedProperties(this CloudQueueMessage message, string id, string popReceipt)
+        public static void UpdateChangedProperties(this QueueMessage message, string id, string popReceipt)
         {
             if (id != message.Id)
             {

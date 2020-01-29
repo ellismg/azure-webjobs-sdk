@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Executors;
@@ -72,7 +73,7 @@ namespace WebJobs.Extensions.Storage
                     item,
                     JsonSerialization.Settings);
 
-                var msg = new CloudQueueMessage(contents);
+                var msg = new QueueMessage(contents);
                 await _queue.AddMessageAndCreateIfNotExistsAsync(msg, cancellationToken);
 
                 _parent._sharedWatcher.Notify(_queue.Name);
@@ -122,11 +123,11 @@ namespace WebJobs.Extensions.Storage
         }
 
         // $$$ cleanup
-        private class Wrapper : ITriggerExecutor<CloudQueueMessage>
+        private class Wrapper : ITriggerExecutor<QueueMessage>
         {
             public Func<string, CancellationToken, Task<FunctionResult>> _callback;
 
-            public Task<FunctionResult> ExecuteAsync(CloudQueueMessage value, CancellationToken cancellationToken)
+            public Task<FunctionResult> ExecuteAsync(QueueMessage value, CancellationToken cancellationToken)
             {
                 return _callback(value.AsString, cancellationToken);
             }

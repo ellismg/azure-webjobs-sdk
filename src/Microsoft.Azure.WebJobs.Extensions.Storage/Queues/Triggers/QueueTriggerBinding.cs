@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Converters;
 using Microsoft.Azure.WebJobs.Host.Listeners;
@@ -20,18 +21,18 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
     {
         private readonly string _parameterName;
         private readonly CloudQueue _queue;
-        private readonly ITriggerDataArgumentBinding<CloudQueueMessage> _argumentBinding;
+        private readonly ITriggerDataArgumentBinding<QueueMessage> _argumentBinding;
         private readonly IReadOnlyDictionary<string, Type> _bindingDataContract;
         private readonly QueuesOptions _queueOptions;
         private readonly IWebJobsExceptionHandler _exceptionHandler;
         private readonly SharedQueueWatcher _messageEnqueuedWatcherSetter;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly IObjectToTypeConverter<CloudQueueMessage> _converter;
+        private readonly IObjectToTypeConverter<QueueMessage> _converter;
         private readonly IQueueProcessorFactory _queueProcessorFactory;
 
         public QueueTriggerBinding(string parameterName,
             CloudQueue queue,
-            ITriggerDataArgumentBinding<CloudQueueMessage> argumentBinding,
+            ITriggerDataArgumentBinding<QueueMessage> argumentBinding,
             QueuesOptions queueOptions,
             IWebJobsExceptionHandler exceptionHandler,
             SharedQueueWatcher messageEnqueuedWatcherSetter,
@@ -55,7 +56,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
         {
             get
             {
-                return typeof(CloudQueueMessage);
+                return typeof(QueueMessage);
             }
         }
 
@@ -92,16 +93,16 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             return contract;
         }
 
-        private static IObjectToTypeConverter<CloudQueueMessage> CreateConverter(CloudQueue queue)
+        private static IObjectToTypeConverter<QueueMessage> CreateConverter(CloudQueue queue)
         {
-            return new CompositeObjectToTypeConverter<CloudQueueMessage>(
-                new OutputConverter<CloudQueueMessage>(new IdentityConverter<CloudQueueMessage>()),
+            return new CompositeObjectToTypeConverter<QueueMessage>(
+                new OutputConverter<QueueMessage>(new IdentityConverter<QueueMessage>()),
                 new OutputConverter<string>(new StringToStorageQueueMessageConverter(queue)));
         }
 
         public async Task<ITriggerData> BindAsync(object value, ValueBindingContext context)
         {
-            CloudQueueMessage message = null;
+            QueueMessage message = null;
 
             if (!_converter.TryConvert(value, out message))
             {
@@ -137,7 +138,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             };
         }
 
-        private static IReadOnlyDictionary<string, object> CreateBindingData(CloudQueueMessage value,
+        private static IReadOnlyDictionary<string, object> CreateBindingData(QueueMessage value,
             IReadOnlyDictionary<string, object> bindingDataFromValueType)
         {
             Dictionary<string, object> bindingData = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);

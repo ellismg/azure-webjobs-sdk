@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using Microsoft.Azure.WebJobs.Host.Protocols;
@@ -18,7 +19,7 @@ using Microsoft.Azure.WebJobs.Host.Queues.Listeners;
 
 namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
 {
-    internal partial class BlobQueueTriggerExecutor : ITriggerExecutor<CloudQueueMessage>
+    internal partial class BlobQueueTriggerExecutor : ITriggerExecutor<QueueMessage>
     {
         private const string BlobCreatedKey = "BlobCreated";
         private const string BlobLastModifiedKey = "BlobLastModified";
@@ -51,7 +52,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
             _registrations.AddOrUpdate(functionId, registration, (i1, i2) => registration);
         }
 
-        public async Task<FunctionResult> ExecuteAsync(CloudQueueMessage value, CancellationToken cancellationToken)
+        public async Task<FunctionResult> ExecuteAsync(QueueMessage value, CancellationToken cancellationToken)
         {
             BlobTriggerMessage message = JsonConvert.DeserializeObject<BlobTriggerMessage>(value.AsString, JsonSerialization.Settings);
 

@@ -3,12 +3,13 @@
 
 using System;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 {
-    internal class StorageQueueMessageToByteArrayConverter : IConverter<CloudQueueMessage, byte[]>
+    internal class StorageQueueMessageToByteArrayConverter : IConverter<QueueMessage, byte[]>
     {
-        public byte[] Convert(CloudQueueMessage input)
+        public byte[] Convert(QueueMessage input)
         {
             if (input == null)
             {

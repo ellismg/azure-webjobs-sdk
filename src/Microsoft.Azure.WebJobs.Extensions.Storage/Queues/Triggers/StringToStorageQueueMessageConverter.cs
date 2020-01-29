@@ -3,10 +3,11 @@
 
 using System;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 {
-    internal class StringToStorageQueueMessageConverter : IConverter<string, CloudQueueMessage>
+    internal class StringToStorageQueueMessageConverter : IConverter<string, QueueMessage>
     {
         private readonly CloudQueue _queue;
 
@@ -20,9 +21,9 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             _queue = queue;
         }
 
-        public CloudQueueMessage Convert(string input)
+        public QueueMessage Convert(string input)
         {
-            return new CloudQueueMessage(input);
+            return new QueueMessage(input);
         }
     }
 }

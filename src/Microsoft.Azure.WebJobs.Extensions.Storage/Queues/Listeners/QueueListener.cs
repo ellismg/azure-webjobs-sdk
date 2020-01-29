@@ -9,6 +9,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Extensions.Storage;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
@@ -28,7 +29,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
         private readonly IDelayStrategy _delayStrategy;
         private readonly CloudQueue _queue;
         private readonly CloudQueue _poisonQueue;
-        private readonly ITriggerExecutor<CloudQueueMessage> _triggerExecutor;
+        private readonly ITriggerExecutor<QueueMessage> _triggerExecutor;
         private readonly IWebJobsExceptionHandler _exceptionHandler;
         private readonly IMessageEnqueuedWatcher _sharedWatcher;
         private readonly List<Task> _processing = new List<Task>();
@@ -54,7 +55,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
 
         public QueueListener(CloudQueue queue,
             CloudQueue poisonQueue,
-            ITriggerExecutor<CloudQueueMessage> triggerExecutor,
+            ITriggerExecutor<QueueMessage> triggerExecutor,
             IWebJobsExceptionHandler exceptionHandler,
             ILoggerFactory loggerFactory,
             SharedQueueWatcher sharedWatcher,
@@ -175,7 +176,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                 _stopWaitingTaskSource = new TaskCompletionSource<object>();
             }
 
-            IEnumerable<CloudQueueMessage> batch = null;
+            IEnumerable<QueueMessage> batch = null;
             string clientRequestId = Guid.NewGuid().ToString();
             Stopwatch sw = null;
             try
@@ -312,7 +313,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
             }
         }
 
-        internal async Task ProcessMessageAsync(CloudQueueMessage message, TimeSpan visibilityTimeout, CancellationToken cancellationToken)
+        internal async Task ProcessMessageAsync(QueueMessage message, TimeSpan visibilityTimeout, CancellationToken cancellationToken)
         {
             try
             {
@@ -361,7 +362,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
         }
 
         private ITaskSeriesTimer CreateUpdateMessageVisibilityTimer(CloudQueue queue,
-            CloudQueueMessage message, TimeSpan visibilityTimeout,
+            QueueMessage message, TimeSpan visibilityTimeout,
             IWebJobsExceptionHandler exceptionHandler)
         {
             // Update a message's visibility when it is halfway to expiring.
@@ -432,7 +433,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
 
                 if (queueLength > 0)
                 {
-                    CloudQueueMessage message = await _queue.PeekMessageAsync();
+                    QueueMessage message = await _queue.PeekMessageAsync();
                     if (message != null)
                     {
                         if (message.InsertionTime.HasValue)

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Protocols;
 using Newtonsoft.Json.Linq;
 
@@ -18,7 +19,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
     /// <remarks>
     /// Important that this class can interoperate with external queue messages, 
     /// so be resilient to a missing guid marker. 
-    /// Can we switch to some auxiliary table? Beware, CloudQueueMessage. 
+    /// Can we switch to some auxiliary table? Beware, QueueMessage. 
     /// Id is not filled out until after the message is queued, 
     /// but then there's a race between updating the aux storage and another function picking up the message.
     /// </remarks>
@@ -40,7 +41,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         }
 
         [DebuggerNonUserCode]
-        public static Guid? GetOwner(CloudQueueMessage msg)
+        public static Guid? GetOwner(QueueMessage msg)
         {
             string text = msg.TryGetAsString();
 

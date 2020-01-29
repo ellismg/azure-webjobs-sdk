@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Microsoft.Azure.Storage;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
@@ -13,7 +14,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
     internal static class StorageQueueExtensions
     {
         public static async Task AddMessageAndCreateIfNotExistsAsync(this CloudQueue queue,
-            CloudQueueMessage message, CancellationToken cancellationToken)
+            QueueMessage message, CancellationToken cancellationToken)
         {
             if (queue == null)
             {

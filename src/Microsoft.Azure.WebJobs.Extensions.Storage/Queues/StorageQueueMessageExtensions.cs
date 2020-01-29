@@ -4,12 +4,13 @@
 using System;
 using System.Text;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {
     internal static class StorageQueueMessageExtensions
     {
-        public static string TryGetAsString(this CloudQueueMessage message)
+        public static string TryGetAsString(this QueueMessage message)
         {
             if (message == null)
             {
