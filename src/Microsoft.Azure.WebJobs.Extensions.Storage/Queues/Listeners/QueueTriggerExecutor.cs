@@ -37,7 +37,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
         {
             return new Dictionary<string, string>()
             {
-                { "MessageId", value.Id.ToString() },
+                { "MessageId", value.MessageId.ToString() },
                 { nameof(QueueMessage.DequeueCount), value.DequeueCount.ToString() },
                 { nameof(QueueMessage.InsertionTime), value.InsertionTime?.ToString(Constants.DateTimeFormatString) }
             };

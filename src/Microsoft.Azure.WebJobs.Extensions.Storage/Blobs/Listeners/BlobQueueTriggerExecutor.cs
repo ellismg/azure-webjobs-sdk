@@ -72,7 +72,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
             FunctionResult successResult = new FunctionResult(true);
             if (!_registrations.TryGetValue(functionId, out BlobQueueRegistration registration))
             {
-                Logger.FunctionNotFound(_logger, message.BlobName, functionId, value.Id);
+                Logger.FunctionNotFound(_logger, message.BlobName, functionId, value.MessageId);
                 return successResult;
             }
 
@@ -88,7 +88,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
             catch (StorageException exception) when (exception.IsNotFound() || exception.IsOk())
             {
                 // If the blob no longer exists, just ignore this message.
-                Logger.BlobNotFound(_logger, blobName, value.Id);
+                Logger.BlobNotFound(_logger, blobName, value.MessageId);
                 return successResult;
             }
 
