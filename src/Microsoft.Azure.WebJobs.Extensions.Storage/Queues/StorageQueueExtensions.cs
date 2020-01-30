@@ -25,7 +25,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 
             try
             {
-                await queue.AddMessageAsync(message, cancellationToken);
+                await queue.SendMessageAsync(message.MessageText, cancellationToken);
                 return;
             }
             catch (StorageException exception)
@@ -40,7 +40,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 
             Debug.Assert(isQueueNotFoundException);
             await queue.CreateIfNotExistsAsync(cancellationToken);
-            await queue.AddMessageAsync(message, cancellationToken);
+            await queue.SendMessageAsync(message.MessageText, cancellationToken);
         }
     }
 }

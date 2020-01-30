@@ -17,10 +17,5 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         {
             return queue.CreateIfNotExistsAsync(null, null, cancellationToken);
         }
-
-        public static Task AddMessageAsync(this QueueClient queue, QueueMessage message, CancellationToken cancellationToken)
-        {
-            return queue.AddMessageAsync(message, null, null, null, null, cancellationToken);
-        }
     }
 }
