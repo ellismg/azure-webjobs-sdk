@@ -80,7 +80,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                 return null;
             }
 
-            return client.GetQueueReference(possiblePoisonQueueName);
+            return client.GetQueueClient(possiblePoisonQueueName);
         }
     }
 }

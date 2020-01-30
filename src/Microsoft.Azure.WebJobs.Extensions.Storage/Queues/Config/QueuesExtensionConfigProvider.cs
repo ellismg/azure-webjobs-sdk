@@ -202,7 +202,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 string queueName = attrResolved.QueueName.ToLowerInvariant();
                 QueueUtils.ValidateQueueName(queueName);
 
-                var queue = client.GetQueueReference(queueName);
+                var queue = client.GetQueueClient(queueName);
                 return Task.FromResult(queue);
             }
 

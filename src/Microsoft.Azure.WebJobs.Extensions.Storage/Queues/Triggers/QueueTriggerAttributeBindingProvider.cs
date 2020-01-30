@@ -75,7 +75,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             //account.AssertTypeOneOf(StorageAccountType.GeneralPurpose); $$$
 
             QueueServiceClient client = account.CreateCloudQueueClient();
-            var queue = client.GetQueueReference(queueName);
+            var queue = client.GetQueueClient(queueName);
 
             ITriggerBinding binding = new QueueTriggerBinding(parameter.Name, queue, argumentBinding,
                 _queueOptions, _exceptionHandler, _messageEnqueuedWatcherSetter,

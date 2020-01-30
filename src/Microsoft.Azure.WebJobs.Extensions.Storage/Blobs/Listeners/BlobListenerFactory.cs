@@ -83,7 +83,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
 
             string hostId = await _hostIdProvider.GetHostIdAsync(cancellationToken);
             string hostBlobTriggerQueueName = HostQueueNames.GetHostBlobTriggerQueueName(hostId);
-            var hostBlobTriggerQueue = primaryQueueClient.GetQueueReference(hostBlobTriggerQueueName);
+            var hostBlobTriggerQueue = primaryQueueClient.GetQueueClient(hostBlobTriggerQueueName);
 
             SharedQueueWatcher sharedQueueWatcher = _messageEnqueuedWatcherSetter;
 

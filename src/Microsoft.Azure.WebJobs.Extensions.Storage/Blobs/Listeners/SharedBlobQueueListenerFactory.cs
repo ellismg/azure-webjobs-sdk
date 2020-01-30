@@ -62,7 +62,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
             // the triggering blob.
             // However we use a poison queue in the host storage account as a fallback default
             // in case a particular blob lives in a restricted "blob only" storage account (i.e. no queues).
-            var defaultPoisonQueue = _hostAccount.CreateCloudQueueClient().GetQueueReference(HostQueueNames.BlobTriggerPoisonQueue);
+            var defaultPoisonQueue = _hostAccount.CreateCloudQueueClient().GetQueueClient(HostQueueNames.BlobTriggerPoisonQueue);
 
             // This special queue bypasses the QueueProcessorFactory - we don't want people to override this.
             // So we define our own custom queue processor factory for this listener
@@ -106,7 +106,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
                 BlobQueueRegistration registration = null;
                 if (_executor.TryGetRegistration(blobTriggerMessage.FunctionId, out registration))
                 {
-                    var poisonQueue = registration.QueueClient.GetQueueReference(HostQueueNames.BlobTriggerPoisonQueue);
+                    var poisonQueue = registration.QueueClient.GetQueueClient(HostQueueNames.BlobTriggerPoisonQueue);
                     return poisonQueue;
                 }
 

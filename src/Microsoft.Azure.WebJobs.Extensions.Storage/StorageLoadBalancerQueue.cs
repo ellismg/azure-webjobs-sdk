@@ -89,7 +89,7 @@ namespace WebJobs.Extensions.Storage
         {
             // $$$ Review
             var account = _storageAccountProvider.Get(ConnectionStringNames.Dashboard);
-            var queue = account.CreateCloudQueueClient().GetQueueReference(queueMoniker);
+            var queue = account.CreateCloudQueueClient().GetQueueClient(queueMoniker);
             return queue;
         }
 
