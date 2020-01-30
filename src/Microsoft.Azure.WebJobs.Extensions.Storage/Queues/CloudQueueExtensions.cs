@@ -22,11 +22,5 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         {
             return queue.AddMessageAsync(message, null, null, null, null, cancellationToken);
         }
-
-        public static Task DeleteMessageAsync(this QueueClient queue, QueueMessage message, CancellationToken cancellationToken)
-        {
-            // $$$ How to pass cancellationtoken?
-            return queue.DeleteMessageAsync(message);
-        }
     }
 }

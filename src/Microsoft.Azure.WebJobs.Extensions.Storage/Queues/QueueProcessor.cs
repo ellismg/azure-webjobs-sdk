@@ -215,7 +215,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         {
             try
             {
-                await _queue.DeleteMessageAsync(message, cancellationToken);
+                await _queue.DeleteMessageAsync(message.MessageId, message.PopReceipt, cancellationToken);
             }
             catch (StorageException exception)
             {
