@@ -28,9 +28,9 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
         {
             string contents = JsonConvert.SerializeObject(message, JsonSerialization.Settings);
             var queueMessage = new QueueMessage(contents);
-            await _queue.AddMessageAndCreateIfNotExistsAsync(queueMessage, cancellationToken);
+            var addResp = await _queue.AddMessageAndCreateIfNotExistsAsync(queueMessage, cancellationToken);
             _watcher.Notify(_queue.Name);
-            return (QueueName: _queue.Name, MessageId: queueMessage.Id);
+            return (QueueName: _queue.Name, MessageId: addResp.Value.MessageId);
         }
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Microsoft.Azure.Storage;
@@ -13,7 +14,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 {
     internal static class StorageQueueExtensions
     {
-        public static async Task AddMessageAndCreateIfNotExistsAsync(this QueueClient queue,
+        public static async Task<Response<SendReceipt>> AddMessageAndCreateIfNotExistsAsync(this QueueClient queue,
             QueueMessage message, CancellationToken cancellationToken)
         {
             if (queue == null)
@@ -25,22 +26,16 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 
             try
             {
-                await queue.SendMessageAsync(message.MessageText, cancellationToken);
-                return;
+                return await queue.SendMessageAsync(message.AsString, cancellationToken);
             }
-            catch (StorageException exception)
+            catch (RequestFailedException exception) when (exception.ErrorCode == "QueueNotFound")
             {
-                if (!exception.IsNotFoundQueueNotFound())
-                {
-                    throw;
-                }
-
                 isQueueNotFoundException = true;
             }
 
             Debug.Assert(isQueueNotFoundException);
             await queue.CreateIfNotExistsAsync(cancellationToken);
-            await queue.SendMessageAsync(message.MessageText, cancellationToken);
+            return await queue.SendMessageAsync(message.AsString, cancellationToken);
         }
     }
 }
