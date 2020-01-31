@@ -6,8 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
+using Microsoft.Azure.WebJobs.Extensions.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host.Timers;
-using Microsoft.Azure.Storage;
+using Azure;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
 {
@@ -52,7 +53,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                 // The next execution should occur after a normal delay.
                 delay = _speedupStrategy.GetNextDelay(executionSucceeded: true);
             }
-            catch (StorageException exception)
+            catch (RequestFailedException exception)
             {
                 // For consistency, the exceptions handled here should match PollQueueCommand.DeleteMessageAsync.
                 if (exception.IsServerSideError())

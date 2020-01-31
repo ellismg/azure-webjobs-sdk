@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Azure;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
-using Microsoft.Azure.Storage;
+using Microsoft.Azure.WebJobs.Extensions.Storage.Queues;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {
@@ -28,7 +28,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
             {
                 return await queue.SendMessageAsync(message.AsString, cancellationToken);
             }
-            catch (RequestFailedException exception) when (exception.ErrorCode == "QueueNotFound")
+            catch (RequestFailedException exception) when (exception.IsNotFoundQueueNotFound())
             {
                 isQueueNotFoundException = true;
             }

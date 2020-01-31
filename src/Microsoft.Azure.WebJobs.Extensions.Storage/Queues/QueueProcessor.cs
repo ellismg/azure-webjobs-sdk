@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
+using Microsoft.Azure.WebJobs.Extensions.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Storage;
+using Azure;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues
 {
@@ -176,7 +178,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
                 // We couldn't process the message. Let someone else try.
                 await _queue.UpdateMessageAsync(message.MessageId, message.PopReceipt, visibilityTimeout: visibilityTimeout, cancellationToken: cancellationToken);
             }
-            catch (StorageException exception)
+            catch (RequestFailedException exception)
             {
                 if (exception.IsBadRequestPopReceiptMismatch())
                 {
@@ -208,7 +210,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
             {
                 await _queue.DeleteMessageAsync(message.MessageId, message.PopReceipt, cancellationToken);
             }
-            catch (StorageException exception)
+            catch (RequestFailedException exception)
             {
                 // For consistency, the exceptions handled here should match UpdateQueueMessageVisibilityCommand.
                 if (exception.IsBadRequestPopReceiptMismatch())

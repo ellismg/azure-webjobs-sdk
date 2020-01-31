@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Extensions.Storage;
+using Microsoft.Azure.WebJobs.Extensions.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using Microsoft.Azure.WebJobs.Host.Protocols;
@@ -18,6 +19,7 @@ using Microsoft.Azure.WebJobs.Host.Scale;
 using Microsoft.Azure.WebJobs.Host.Timers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Storage;
+using Azure;
 
 namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
 {
@@ -210,7 +212,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                     Logger.GetMessages(_logger, _functionDescriptor.LogName, _queue.Name, context.ClientRequestID, count, sw.ElapsedMilliseconds);
                 }
             }
-            catch (StorageException exception)
+            catch (RequestFailedException exception)
             {
                 // if we get ANY errors querying the queue reset our existence check
                 // doing this on all errors rather than trying to special case not
@@ -337,9 +339,9 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                 // Only cancel completion or update of the message if a non-graceful shutdown is requested via _shutdownCancellationTokenSource.
                 await _queueProcessor.CompleteProcessingMessageAsync(message, result, _shutdownCancellationTokenSource.Token);
             }
-            catch (StorageException ex) when (ex.IsTaskCanceled())
+            catch (RequestFailedException ex) when (ex.IsTaskCanceled())
             {
-                // TaskCanceledExceptions may be wrapped in StorageException.
+                // TaskCanceledExceptions may be wrapped in RequestFailedException.
             }
             catch (OperationCanceledException)
             {
