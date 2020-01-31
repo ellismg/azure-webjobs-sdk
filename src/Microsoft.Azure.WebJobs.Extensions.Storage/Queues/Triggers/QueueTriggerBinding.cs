@@ -75,10 +75,10 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             Dictionary<string, Type> contract = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             contract.Add("QueueTrigger", typeof(string));
             contract.Add("DequeueCount", typeof(int));
-            contract.Add("ExpirationTime", typeof(DateTimeOffset));
-            contract.Add("Id", typeof(string));
-            contract.Add("InsertionTime", typeof(DateTimeOffset));
-            contract.Add("NextVisibleTime", typeof(DateTimeOffset));
+            contract.Add("ExpiresOn", typeof(DateTimeOffset));
+            contract.Add("MessageId", typeof(string));
+            contract.Add("InsertedOn", typeof(DateTimeOffset));
+            contract.Add("NextVisibleOn", typeof(DateTimeOffset));
             contract.Add("PopReceipt", typeof(string));
 
             if (argumentBindingContract != null)
@@ -152,10 +152,10 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             }
 
             bindingData.Add("DequeueCount", value.DequeueCount);
-            bindingData.Add("ExpirationTime", value.ExpirationTime.GetValueOrDefault(DateTimeOffset.MaxValue));
-            bindingData.Add("Id", value.Id);
-            bindingData.Add("InsertionTime", value.InsertionTime.GetValueOrDefault(DateTimeOffset.UtcNow));
-            bindingData.Add("NextVisibleTime", value.NextVisibleTime.GetValueOrDefault(DateTimeOffset.MaxValue));
+            bindingData.Add("ExpiresOn", value.ExpiresOn.GetValueOrDefault(DateTimeOffset.MaxValue));
+            bindingData.Add("MessageId", value.MessageId);
+            bindingData.Add("InsertedOn", value.InsertedOn.GetValueOrDefault(DateTimeOffset.UtcNow));
+            bindingData.Add("NextVisibleOn", value.NextVisibleOn.GetValueOrDefault(DateTimeOffset.MaxValue));
             bindingData.Add("PopReceipt", value.PopReceipt);
 
             if (bindingDataFromValueType != null)
