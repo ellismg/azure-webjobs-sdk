@@ -39,7 +39,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
             {
                 { "MessageId", value.MessageId.ToString() },
                 { nameof(QueueMessage.DequeueCount), value.DequeueCount.ToString() },
-                { nameof(QueueMessage.InsertionTime), value.InsertionTime?.ToString(Constants.DateTimeFormatString) }
+                { nameof(QueueMessage.InsertedOn), value.InsertedOn?.ToString(Constants.DateTimeFormatString) }
             };
         }
     }
