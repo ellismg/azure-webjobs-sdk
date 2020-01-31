@@ -26,18 +26,26 @@ namespace Microsoft.Azure.WebJobs
         /// </summary>
         public CloudStorageAccount SdkObject { get; protected set; }
         public TableStorageAccount TableSdkObject { get; protected set; }
+        public QueueServiceClient QueueServiceClient { get; protected set; }
 
         public static StorageAccount NewFromConnectionString(string accountConnectionString)
         {
             var account = CloudStorageAccount.Parse(accountConnectionString);
             var tableAccount = TableStorageAccount.Parse(accountConnectionString);
-            return New(account, tableAccount);
+            var queueServiceClient = new QueueServiceClient(accountConnectionString);
+            return New(account, tableAccount, queueServiceClient);
         }
 
-        public static StorageAccount New(CloudStorageAccount account, TableStorageAccount tableAccount = null)
+        public static StorageAccount New(CloudStorageAccount account, TableStorageAccount tableAccount)
         {
-            return new StorageAccount { SdkObject = account, TableSdkObject = tableAccount };
+            return New(account, tableAccount, null);
         }
+
+        public static StorageAccount New(CloudStorageAccount account, TableStorageAccount tableAccount = null, QueueServiceClient queueServiceClient = null)
+        {
+            return new StorageAccount { SdkObject = account, TableSdkObject = tableAccount, QueueServiceClient = queueServiceClient };
+        }
+
 
         public virtual bool IsDevelopmentStorageAccount()
         {
@@ -61,7 +69,7 @@ namespace Microsoft.Azure.WebJobs
         }
         public virtual QueueServiceClient CreateCloudQueueClient()
         {
-            return SdkObject.CreateCloudQueueClient();
+            return QueueServiceClient;
         }
 
         public virtual CloudTableClient CreateCloudTableClient()

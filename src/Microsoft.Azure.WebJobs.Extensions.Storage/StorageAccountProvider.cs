@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using Azure.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
 
@@ -56,7 +57,17 @@ namespace Microsoft.Azure.WebJobs
                 throw new InvalidOperationException($"Storage account connection string for '{IConfigurationExtensions.GetPrefixedConnectionStringName(name)}' is invalid");
             }
 
-            return StorageAccount.New(cloudStorageAccount, tableStorageAccount);
+            QueueServiceClient queueServiceClient;
+            try
+            {
+                queueServiceClient = new QueueServiceClient(connectionString);
+            }
+            catch (Exception e) when (e is FormatException || e is ArgumentException)
+            {
+                throw new InvalidOperationException($"Storage account connection string for '{IConfigurationExtensions.GetPrefixedConnectionStringName(name)}' is invalid");
+            }
+
+            return StorageAccount.New(cloudStorageAccount, tableStorageAccount, queueServiceClient);
         }
 
         /// <summary>
