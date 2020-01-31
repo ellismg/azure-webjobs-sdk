@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
@@ -14,6 +15,28 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 {
     internal static class StorageQueueExtensions
     {
+        public static async Task<bool> ExistsAsync(this QueueClient queue)
+        {
+            // Ideally, the v12 SDK would just have an ExistsAsync method like previous versions.  In the meantime we can
+            // do what the previous SDK's implementation did, which was to try to fetch the queue's properties and use the
+            // status of the operation to decide if the queue exists or not.
+            // (ref: https://github.com/Azure/azure-storage-net/blob/v11.0.0/Lib/ClassLibraryCommon/Queue/CloudQueue.cs#L2357-L2380)
+            // (ref: https://github.com/Azure/azure-sdk-for-net/issues/9752)
+            try
+            {
+                await queue.GetPropertiesAsync();
+                return true;
+            }
+            catch (RequestFailedException e) when (e.Status == 404 /* NotFound */) 
+            {
+                return false;
+            }
+            catch (RequestFailedException e) when (e.Status == 412 /* Precondition Failed */)
+            {
+                return true;
+            }
+        }
+
         public static async Task<Response<SendReceipt>> AddMessageAndCreateIfNotExistsAsync(this QueueClient queue,
             QueueMessage message, CancellationToken cancellationToken)
         {

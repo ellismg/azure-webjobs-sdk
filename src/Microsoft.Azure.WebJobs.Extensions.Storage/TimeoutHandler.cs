@@ -45,5 +45,38 @@ namespace Microsoft.Azure.WebJobs.Extensions.Storage
                 return await operationTask;
             }
         }
+
+        public static async Task<T> ExecuteWithTimeout<T>(string operationName, IWebJobsExceptionHandler exceptionHandler, Func<Task<T>> operation)
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                Task timeoutTask = Task.Delay(DefaultTimeout, cts.Token);
+                Task<T> operationTask = operation();
+
+                Task completedTask = await Task.WhenAny(timeoutTask, operationTask);
+
+                if (Equals(timeoutTask, completedTask))
+                {
+                    ExceptionDispatchInfo exceptionDispatchInfo;
+                    try
+                    {
+                        throw new TimeoutException($"The operation '{operationName}' did not complete in '{DefaultTimeout}'.");
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
+                    }
+
+                    await exceptionHandler.OnUnhandledExceptionAsync(exceptionDispatchInfo);
+
+                    return default(T);
+                }
+
+                // Cancel the Delay.
+                cts.Cancel();
+
+                return await operationTask;
+            }
+        }
     }
 }

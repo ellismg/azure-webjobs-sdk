@@ -10,9 +10,9 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
     {
         private static class Logger
         {
-            private static readonly Action<ILogger, string, string, string, int, long, Exception> _getMessages =
-                LoggerMessage.Define<string, string, string, int, long>(LogLevel.Debug, new EventId(1, nameof(GetMessages)),
-                    "Poll for function '{functionName}' on queue '{queueName}' with ClientRequestId '{clientRequestId}' found {messageCount} messages in {pollLatency} ms.");
+            private static readonly Action<ILogger, string, string, int, long, Exception> _getMessages =
+                LoggerMessage.Define<string, string, int, long>(LogLevel.Debug, new EventId(1, nameof(GetMessages)),
+                    "Poll for function '{functionName}' on queue '{queueName}' found {messageCount} messages in {pollLatency} ms.");
 
             private static readonly Action<ILogger, string, double, string, Exception> _backoffDelay =
                 LoggerMessage.Define<string, double, string>(LogLevel.Debug, new EventId(2, nameof(BackoffDelay)),
@@ -22,8 +22,8 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                LoggerMessage.Define<string, string, string, string, long, string>(LogLevel.Debug, new EventId(3, nameof(HandlingStorageException)),
                    "Poll for function '{functionName}' on queue '{queueName}' with ClientRequestId '{clientRequestId}' threw a {exceptionType} in {pollLatency} ms. This exception is handled and queue polling will resume after a delay. Message: '{exceptionMessage}'");
 
-            public static void GetMessages(ILogger logger, string functionName, string queueName, string clientRequestId, int messageCount, long pollLatency) =>
-                _getMessages(logger, functionName, queueName, clientRequestId, messageCount, pollLatency, null);
+            public static void GetMessages(ILogger logger, string functionName, string queueName, int messageCount, long pollLatency) =>
+                _getMessages(logger, functionName, queueName, messageCount, pollLatency, null);
 
             public static void BackoffDelay(ILogger logger, string functionName, string queueName, double pollDelay) =>
                 _backoffDelay(logger, functionName, pollDelay, queueName, null);

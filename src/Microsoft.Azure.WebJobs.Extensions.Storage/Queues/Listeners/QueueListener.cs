@@ -178,7 +178,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                 _stopWaitingTaskSource = new TaskCompletionSource<object>();
             }
 
-            IEnumerable<QueueMessage> batch = null;
+            Response<QueueMessage[]> batchResponse = null;
             string clientRequestId = Guid.NewGuid().ToString();
             Stopwatch sw = null;
             try
@@ -197,19 +197,14 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                 if (_queueExists.Value)
                 {
                     sw = Stopwatch.StartNew();
-                    OperationContext context = new OperationContext { ClientRequestID = clientRequestId };
 
-                    batch = await TimeoutHandler.ExecuteWithTimeout("GetMessages", context.ClientRequestID, _exceptionHandler, () =>
+                    batchResponse = await TimeoutHandler.ExecuteWithTimeout("GetMessages", _exceptionHandler, () =>
                     {
-                        return _queue.GetMessagesAsync(_queueProcessor.BatchSize,
-                            _visibilityTimeout,
-                            options: null,
-                            operationContext: context,
-                            cancellationToken: cancellationToken);
+                        return _queue.ReceiveMessagesAsync(_queueProcessor.BatchSize, _visibilityTimeout, cancellationToken);
                     });
 
-                    int count = batch?.Count() ?? -1;
-                    Logger.GetMessages(_logger, _functionDescriptor.LogName, _queue.Name, context.ClientRequestID, count, sw.ElapsedMilliseconds);
+                    int count = batchResponse?.Value.Length ?? -1;
+                    Logger.GetMessages(_logger, _functionDescriptor.LogName, _queue.Name, count, sw.ElapsedMilliseconds);
                 }
             }
             catch (RequestFailedException exception)
@@ -236,13 +231,13 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
                 }
             }
 
-            if (batch == null)
+            if (batchResponse == null)
             {
                 return CreateBackoffResult();
             }
 
             bool foundMessage = false;
-            foreach (var message in batch)
+            foreach (var message in batchResponse.Value)
             {
                 if (message == null)
                 {
