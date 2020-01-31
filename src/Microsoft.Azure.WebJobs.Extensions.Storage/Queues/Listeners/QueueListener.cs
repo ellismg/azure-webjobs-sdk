@@ -428,17 +428,16 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
 
             try
             {
-                await _queue.FetchAttributesAsync();
-                queueLength = _queue.ApproximateMessageCount.GetValueOrDefault();
+                queueLength = (await _queue.GetPropertiesAsync()).Value.ApproximateMessagesCount;
 
                 if (queueLength > 0)
                 {
-                    QueueMessage message = await _queue.PeekMessageAsync();
+                    PeekedMessage message = (await _queue.PeekMessagesAsync()).Value.FirstOrDefault();
                     if (message != null)
                     {
-                        if (message.InsertionTime.HasValue)
+                        if (message.InsertedOn.HasValue)
                         {
-                            queueTime = DateTime.UtcNow.Subtract(message.InsertionTime.Value.DateTime);
+                            queueTime = DateTime.UtcNow.Subtract(message.InsertedOn.Value.DateTime);
                         }
                     }
                     else
