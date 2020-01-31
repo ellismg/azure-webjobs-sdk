@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
@@ -73,7 +74,7 @@ namespace WebJobs.Extensions.Storage
                     item,
                     JsonSerialization.Settings);
 
-                var msg = new QueueMessage(contents);
+                var msg = new QueueMessageInput(contents);
                 await _queue.AddMessageAndCreateIfNotExistsAsync(msg, cancellationToken);
 
                 _parent._sharedWatcher.Notify(_queue.Name);

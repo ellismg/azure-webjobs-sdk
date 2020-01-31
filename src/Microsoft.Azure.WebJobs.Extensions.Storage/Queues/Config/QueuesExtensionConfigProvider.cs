@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Description;
+using Microsoft.Azure.WebJobs.Extensions.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Host.Protocols;
@@ -69,9 +70,9 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 // IStorageQueueMessage is the core testing interface 
                 var binding = context.AddBindingRule<QueueAttribute>();
                 binding
-                    .AddConverter<byte[], QueueMessage>(ConvertByteArrayToQueueMessage)
-                    .AddConverter<string, QueueMessage>(ConvertStringToQueueMessage)
-                    .AddOpenConverter<OpenType.Poco, QueueMessage>(ConvertPocoToQueueMessage);
+                    .AddConverter<byte[], QueueMessageInput>(ConvertByteArrayToQueueMessage)
+                    .AddConverter<string, QueueMessageInput>(ConvertStringToQueueMessage)
+                    .AddOpenConverter<OpenType.Poco, QueueMessageInput>(ConvertPocoToQueueMessage);
 
                 context // global converters, apply to multiple attributes. 
                      .AddConverter<QueueMessage, byte[]>(ConvertQueueMessageToByteArray)
@@ -99,7 +100,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 return msg;
             }
 
-            private QueueMessage ConvertJObjectToQueueMessage(JObject obj, QueueAttribute attrResolved)
+            private QueueMessageInput ConvertJObjectToQueueMessage(JObject obj, QueueAttribute attrResolved)
             {
                 var json = obj.ToString(); // convert to JSon
                 return ConvertStringToQueueMessage(json, attrResolved);
@@ -177,14 +178,14 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                 return arg.AsString();
             }
 
-            private QueueMessage ConvertByteArrayToQueueMessage(byte[] arg, QueueAttribute attrResolved)
+            private QueueMessageInput ConvertByteArrayToQueueMessage(byte[] arg, QueueAttribute attrResolved)
             {
-                return new QueueMessage(arg);
+                return new QueueMessageInput(arg);
             }
 
-            private QueueMessage ConvertStringToQueueMessage(string arg, QueueAttribute attrResolved)
+            private QueueMessageInput ConvertStringToQueueMessage(string arg, QueueAttribute attrResolved)
             {
-                return new QueueMessage(arg);
+                return new QueueMessageInput(arg);
             }
 
             public async Task<IAsyncCollector<QueueMessage>> ConvertAsync(QueueAttribute attrResolved, CancellationToken cancellationToken)
@@ -252,7 +253,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
                     throw new InvalidOperationException("Cannot enqueue a null queue message instance.");
                 }
 
-                await _queue.AddMessageAndCreateIfNotExistsAsync(message, cancellationToken);
+                await _queue.AddMessageAndCreateIfNotExistsAsync(new QueueMessageInput(message.AsString()), cancellationToken);
 
                 if (_messageEnqueuedWatcher != null)
                 {

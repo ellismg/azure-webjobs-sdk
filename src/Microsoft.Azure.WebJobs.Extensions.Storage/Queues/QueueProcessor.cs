@@ -157,7 +157,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
             string msg = string.Format(CultureInfo.InvariantCulture, "Message has reached MaxDequeueCount of {0}. Moving message to queue '{1}'.", MaxDequeueCount, poisonQueue.Name);
             _logger?.LogWarning(msg);
 
-            await poisonQueue.AddMessageAndCreateIfNotExistsAsync(message, cancellationToken);
+            await poisonQueue.AddMessageAndCreateIfNotExistsAsync(new QueueMessageInput(message.AsString()), cancellationToken);
 
             var eventArgs = new PoisonMessageEventArgs(message, poisonQueue);
             OnMessageAddedToPoisonQueue(eventArgs);

@@ -38,7 +38,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
         }
 
         public static async Task<Response<SendReceipt>> AddMessageAndCreateIfNotExistsAsync(this QueueClient queue,
-            QueueMessage message, CancellationToken cancellationToken)
+            QueueMessageInput message, CancellationToken cancellationToken)
         {
             if (queue == null)
             {
@@ -49,7 +49,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 
             try
             {
-                return await queue.SendMessageAsync(message.AsString(), cancellationToken);
+                return await queue.SendMessageAsync(message.MessageText, cancellationToken);
             }
             catch (RequestFailedException exception) when (exception.IsNotFoundQueueNotFound())
             {
@@ -58,7 +58,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 
             Debug.Assert(isQueueNotFoundException);
             await queue.CreateIfNotExistsAsync(cancellationToken);
-            return await queue.SendMessageAsync(message.AsString(), cancellationToken);
+            return await queue.SendMessageAsync(message.MessageText, cancellationToken);
         }
     }
 }

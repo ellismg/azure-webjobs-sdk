@@ -98,9 +98,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 
         private static IObjectToTypeConverter<QueueMessage> CreateConverter(QueueClient queue)
         {
-            return new CompositeObjectToTypeConverter<QueueMessage>(
-                new OutputConverter<QueueMessage>(new IdentityConverter<QueueMessage>()),
-                new OutputConverter<string>(new StringToStorageQueueMessageConverter(queue)));
+            return new OutputConverter<QueueMessage>(new IdentityConverter<QueueMessage>());
         }
 
         public async Task<ITriggerData> BindAsync(object value, ValueBindingContext context)

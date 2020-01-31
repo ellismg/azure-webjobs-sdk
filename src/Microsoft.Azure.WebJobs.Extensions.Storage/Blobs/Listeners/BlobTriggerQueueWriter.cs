@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
+using Microsoft.Azure.WebJobs.Extensions.Storage.Queues;
 using Microsoft.Azure.WebJobs.Host.Protocols;
 using Microsoft.Azure.WebJobs.Host.Queues;
 using Newtonsoft.Json;
@@ -27,7 +28,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
         public async Task<(string QueueName, string MessageId)> EnqueueAsync(BlobTriggerMessage message, CancellationToken cancellationToken)
         {
             string contents = JsonConvert.SerializeObject(message, JsonSerialization.Settings);
-            var queueMessage = new QueueMessage(contents);
+            var queueMessage = new QueueMessageInput(contents);
             var addResp = await _queue.AddMessageAndCreateIfNotExistsAsync(queueMessage, cancellationToken);
             _watcher.Notify(_queue.Name);
             return (QueueName: _queue.Name, MessageId: addResp.Value.MessageId);
