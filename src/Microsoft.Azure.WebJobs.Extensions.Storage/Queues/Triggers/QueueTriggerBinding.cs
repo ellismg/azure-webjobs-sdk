@@ -136,7 +136,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             return new QueueTriggerParameterDescriptor
             {
                 Name = _parameterName,
-                AccountName = _queue.ServiceClient.GetAccountName(),
+                AccountName = _queue.AccountName,
                 QueueName = _queue.Name
             };
         }

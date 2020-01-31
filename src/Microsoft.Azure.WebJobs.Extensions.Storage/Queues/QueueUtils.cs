@@ -9,11 +9,6 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 {
     internal static class QueueUtils
     {
-        public static string GetAccountName(this QueueServiceClient client)
-        {
-            return client?.Credentials?.AccountName;
-        }
-
         /// <summary>
         /// Ensures that the passed name is a valid queue name.
         /// If not, an ArgumentException is thrown
