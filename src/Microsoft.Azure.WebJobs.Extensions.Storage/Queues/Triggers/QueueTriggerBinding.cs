@@ -21,6 +21,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
     {
         private readonly string _parameterName;
         private readonly QueueClient _queue;
+        private readonly QueueServiceClient _queueService;
         private readonly ITriggerDataArgumentBinding<QueueMessage> _argumentBinding;
         private readonly IReadOnlyDictionary<string, Type> _bindingDataContract;
         private readonly QueuesOptions _queueOptions;
@@ -32,6 +33,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
 
         public QueueTriggerBinding(string parameterName,
             QueueClient queue,
+            QueueServiceClient queueService,
             ITriggerDataArgumentBinding<QueueMessage> argumentBinding,
             QueuesOptions queueOptions,
             IWebJobsExceptionHandler exceptionHandler,
@@ -40,6 +42,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             IQueueProcessorFactory queueProcessorFactory)
         {
             _queue = queue ?? throw new ArgumentNullException(nameof(queue));
+            _queueService = queueService ?? throw new ArgumentNullException(nameof(queueService));
             _argumentBinding = argumentBinding ?? throw new ArgumentNullException(nameof(argumentBinding));
             _bindingDataContract = CreateBindingDataContract(argumentBinding.BindingDataContract);
             _queueOptions = queueOptions ?? throw new ArgumentNullException(nameof(queueOptions));
@@ -122,7 +125,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
                 throw new ArgumentNullException("context");
             }
 
-            var factory = new QueueListenerFactory(_queue, _queueOptions, _exceptionHandler,
+            var factory = new QueueListenerFactory(_queue, _queueService, _queueOptions, _exceptionHandler,
                     _messageEnqueuedWatcherSetter, _loggerFactory, context.Executor, _queueProcessorFactory, context.Descriptor);
 
             return factory.CreateAsync(context.CancellationToken);

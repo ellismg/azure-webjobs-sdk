@@ -29,6 +29,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
         private readonly IQueueProcessorFactory _queueProcessorFactory;
 
         public QueueListenerFactory(QueueClient queue,
+            QueueServiceClient queueService,
             QueuesOptions queueOptions,
             IWebJobsExceptionHandler exceptionHandler,
             SharedQueueWatcher messageEnqueuedWatcherSetter,
@@ -38,13 +39,13 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Listeners
             FunctionDescriptor descriptor)
         {
             _queue = queue ?? throw new ArgumentNullException(nameof(queue));
-            _queueOptions = queueOptions ?? throw new ArgumentNullException(nameof(queueOptions));
+            _queueOptions = queueOptions ?? throw new ArgumentNullException(nameof(queueService));
             _exceptionHandler = exceptionHandler ?? throw new ArgumentNullException(nameof(exceptionHandler));
             _messageEnqueuedWatcherSetter = messageEnqueuedWatcherSetter ?? throw new ArgumentNullException(nameof(messageEnqueuedWatcherSetter));
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));
             _descriptor = descriptor ?? throw new ArgumentNullException(nameof(descriptor));
 
-            _poisonQueue = CreatePoisonQueueReference(queue.ServiceClient, queue.Name);
+            _poisonQueue = CreatePoisonQueueReference(queueService, queue.Name);
             _loggerFactory = loggerFactory;
             _queueProcessorFactory = queueProcessorFactory;
         }

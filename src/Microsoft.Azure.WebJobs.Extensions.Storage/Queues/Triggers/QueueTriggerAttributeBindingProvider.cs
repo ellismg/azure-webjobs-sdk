@@ -77,7 +77,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
             QueueServiceClient client = account.CreateCloudQueueClient();
             var queue = client.GetQueueClient(queueName);
 
-            ITriggerBinding binding = new QueueTriggerBinding(parameter.Name, queue, argumentBinding,
+            ITriggerBinding binding = new QueueTriggerBinding(parameter.Name, queue, client, argumentBinding,
                 _queueOptions, _exceptionHandler, _messageEnqueuedWatcherSetter,
                 _loggerFactory, _queueProcessorFactory);
             return Task.FromResult(binding);

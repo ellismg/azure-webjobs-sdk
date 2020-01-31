@@ -101,7 +101,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
                     throw new ArgumentNullException("message");
                 }
 
-                var blobTriggerMessage = JsonConvert.DeserializeObject<BlobTriggerMessage>(message.AsString);
+                var blobTriggerMessage = JsonConvert.DeserializeObject<BlobTriggerMessage>(message.AsString());
 
                 BlobQueueRegistration registration = null;
                 if (_executor.TryGetRegistration(blobTriggerMessage.FunctionId, out registration))

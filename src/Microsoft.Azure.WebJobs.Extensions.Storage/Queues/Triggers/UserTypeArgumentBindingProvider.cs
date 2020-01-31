@@ -54,7 +54,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
                 object convertedValue;
                 try
                 {
-                    convertedValue = JsonConvert.DeserializeObject(value.AsString, ValueType, JsonSerialization.Settings);
+                    convertedValue = JsonConvert.DeserializeObject(value.AsString(), ValueType, JsonSerialization.Settings);
                 }
                 catch (JsonException e)
                 {

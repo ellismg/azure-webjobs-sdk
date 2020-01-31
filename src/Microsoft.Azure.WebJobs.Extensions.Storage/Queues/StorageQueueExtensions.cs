@@ -27,7 +27,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
                 await queue.GetPropertiesAsync();
                 return true;
             }
-            catch (RequestFailedException e) when (e.Status == 404 /* NotFound */) 
+            catch (RequestFailedException e) when (e.Status == 404 /* NotFound */)
             {
                 return false;
             }
@@ -49,7 +49,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 
             try
             {
-                return await queue.SendMessageAsync(message.AsString, cancellationToken);
+                return await queue.SendMessageAsync(message.AsString(), cancellationToken);
             }
             catch (RequestFailedException exception) when (exception.IsNotFoundQueueNotFound())
             {
@@ -58,7 +58,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues
 
             Debug.Assert(isQueueNotFoundException);
             await queue.CreateIfNotExistsAsync(cancellationToken);
-            return await queue.SendMessageAsync(message.AsString, cancellationToken);
+            return await queue.SendMessageAsync(message.AsString(), cancellationToken);
         }
     }
 }

@@ -11,6 +11,7 @@ using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using Microsoft.Azure.WebJobs.Host.Protocols;
+using Microsoft.Azure.WebJobs.Host.Queues;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Logging;
@@ -54,7 +55,7 @@ namespace Microsoft.Azure.WebJobs.Host.Blobs.Listeners
 
         public async Task<FunctionResult> ExecuteAsync(QueueMessage value, CancellationToken cancellationToken)
         {
-            BlobTriggerMessage message = JsonConvert.DeserializeObject<BlobTriggerMessage>(value.AsString, JsonSerialization.Settings);
+            BlobTriggerMessage message = JsonConvert.DeserializeObject<BlobTriggerMessage>(value.AsString(), JsonSerialization.Settings);
 
             if (message == null)
             {

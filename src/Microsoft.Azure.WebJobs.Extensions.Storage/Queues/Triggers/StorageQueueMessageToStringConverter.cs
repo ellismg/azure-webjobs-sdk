@@ -17,7 +17,7 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Triggers
                 throw new ArgumentNullException("input");
             }
 
-            return input.AsString;
+            return input.AsString();
         }
     }
 }

@@ -169,12 +169,12 @@ namespace Microsoft.Azure.WebJobs.Host.Queues.Config
 
             private byte[] ConvertQueueMessageToByteArray(QueueMessage arg)
             {
-                return arg.AsBytes;
+                return arg.AsBytes();
             }
 
             private string ConvertQueueMessageToString(QueueMessage arg)
             {
-                return arg.AsString;
+                return arg.AsString();
             }
 
             private QueueMessage ConvertByteArrayToQueueMessage(byte[] arg, QueueAttribute attrResolved)

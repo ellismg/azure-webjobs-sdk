@@ -129,7 +129,7 @@ namespace WebJobs.Extensions.Storage
 
             public Task<FunctionResult> ExecuteAsync(QueueMessage value, CancellationToken cancellationToken)
             {
-                return _callback(value.AsString, cancellationToken);
+                return _callback(value.AsString(), cancellationToken);
             }
         }
     }
